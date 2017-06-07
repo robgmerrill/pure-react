@@ -1,6 +1,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import './index.css';
+import moment from 'moment';
 
 // Stateless Functional Component
 // function Tweet () {
@@ -19,7 +20,8 @@ class Tweet extends React.Component {
       <div className="tweet">
         <Avatar hash={this.props.tweet.gravatar}/>
         <div className="content">
-          <NameWithHandle/><Time/>
+          <NameWithHandle author={this.props.tweet.author}/>
+          <Time time={this.props.tweet.timestamp}/>
           <Message text={this.props.tweet.message}/>
           <div className="buttons">
             <ReplyButton/>
@@ -79,30 +81,46 @@ class Avatar extends React.Component {
 // }
 
 // WHY?? DO STATELESS FUNCTIONAL COMPONENTS NOT WORK HERE?
-var Message = React.createClass({
-  render: function() {
-    return (
+// var Message = React.createClass({
+//   render: function() {
+//     return (
+//       <div className="message">
+//         {this.props.text}
+//         </div> );
+// } });
+
+class Message extends React.Component {
+  render() {
+    return(
       <div className="message">
         {this.props.text}
-        </div> );
-} });
+        </div>
+    )
+  }
+}
 
 class NameWithHandle extends React.Component {
   render() {
+    var {name, handle} = this.props.author;
     return(
       <span className="name-with-handle">
-        <span className="name">Your Name</span>
-        <span className="handle">@yourhandles</span>
+        <span className="name">{name}</span>
+        <span className="handle">@{handle}</span>
       </span>
     )
   }
 }
 
-function Time() {
-  return(
-    <span className="time">3h ago</span>
-  );
-}
+var Time = React.createClass({
+  computeTimeString: function() {
+    return moment(this.props.time).fromNow();
+  },
+  render: function() {
+    return (
+      <span className="time">
+        {this.computeTimeString()}
+      </span> );
+} });
 
 class ReplyButton extends React.Component {
   render() {
